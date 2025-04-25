@@ -1,19 +1,12 @@
 import React from "react";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { IoCaretDownOutline, IoCaretUpOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import {sorting} from "../features/cryptoSlicer.js";
-import { trends } from "../assets/trends.js";
 
 const CryptoTable = ({ }) => {
   const { data, sortOrder } = useSelector((state) => state.crypto);
   const dispatch = useDispatch();
-
-  const formattedData = trends.prices.map(item => ({
-    time: item[0],
-    price: item[1],
-  }));
 
   function formatNumber(amount) {
     if (amount >= 1e9) return (amount / 1e9).toFixed(2) + "B";
