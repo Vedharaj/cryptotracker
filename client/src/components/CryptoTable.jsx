@@ -1,8 +1,20 @@
 import React from "react";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { IoCaretDownOutline, IoCaretUpOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {sorting} from "../features/cryptoSlicer.js";
+import { trends } from "../assets/trends.js";
 
-const CryptoTable = ({ data }) => {
+const CryptoTable = ({ }) => {
+  const { data, sortOrder } = useSelector((state) => state.crypto);
+  const dispatch = useDispatch();
+
+  const formattedData = trends.prices.map(item => ({
+    time: item[0],
+    price: item[1],
+  }));
+
   function formatNumber(amount) {
     if (amount >= 1e9) return (amount / 1e9).toFixed(2) + "B";
     if (amount >= 1e6) return (amount / 1e6).toFixed(2) + "M";
@@ -11,12 +23,9 @@ const CryptoTable = ({ data }) => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-center text-blue-500 text-3xl font-bold mb-4">
-        Crypto Price Tracker
-      </h1>
-      <div className="bg-white  ">
-        <div className="pt-4 pb-2 border-b border-gray-200 flex justify-between items-center">
+    <div className="py-4 px-2">
+      <div className="bg-white ">
+        <div className="pb-2 border-b border-gray-200 flex justify-between items-center">
           <h1 className="text-xl font-bold mb-2">Top Crypto</h1>
         </div>
 
@@ -26,7 +35,16 @@ const CryptoTable = ({ data }) => {
               <thead>
                 <tr>
                   <th className="p-3 border-b">#</th>
-                  <th className="p-3 border-b">Name</th>
+                  <th className="p-3 border-b" onClick={() => dispatch(sorting({column:"name"}))}>
+                    <div className="flex items-center group cursor-pointer">
+                      {sortOrder.current_price === "asc" ? (
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      ) : (
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      )}
+                      <span>name</span>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -49,17 +67,81 @@ const CryptoTable = ({ data }) => {
             </table>
           </div>
 
-          <div className="overflow-x-auto w-full scrollbar-hide ">
+          <div className="overflow-x-auto w-full scrollbar-hide">
             <table className="table-auto border-collapse min-w-max">
               <thead className="text-center">
                 <tr>
-                  <th className="p-3 border-b">Price</th>
-                  <th className="p-3 border-b">1h %</th>
-                  <th className="p-3 border-b">24h %</th>
-                  <th className="p-3 border-b">7d %</th>
-                  <th className="p-3 border-b">Market Cap</th>
-                  <th className="p-3 border-b">Volume(24h)</th>
-                  <th className="p-3 border-b">Circulating Supply</th>
+                  <th className="p-3 border-b" onClick={() => dispatch(sorting({column:"price"}))}>
+                    <div className="flex items-center justify-end group cursor-pointer">
+                      {sortOrder.current_price === "asc" ? (
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      ) : (
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      )}
+                      <span>Price</span>
+                    </div>
+                  </th>
+
+                  <th className="p-3 border-b">
+                    <div className="flex items-center justify-end group cursor-pointer" onClick={() => dispatch(sorting({column:"change_1h"}))}>
+                      {sortOrder.price_change_percentage_1h_in_currency === "asc" ?
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      :
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      }
+                      <span>1h %</span>
+                    </div>
+                  </th>
+                  <th className="p-3 border-b">
+                    <div className="flex items-center justify-end group cursor-pointer" onClick={() => dispatch(sorting({column:"change_24h"}))}>
+                      {sortOrder.price_change_percentage_24h === "asc" ?
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      :
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      }
+                      <span>24h %</span>
+                    </div>
+                  </th>
+                  <th className="p-3 border-b">
+                    <div className="flex items-center justify-end group cursor-pointer" onClick={() => dispatch(sorting({column:"change_7d"}))}>
+                      {sortOrder.price_change_percentage_7d_in_currency === "asc" ?
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      :
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      }
+                      <span>7d %</span>
+                    </div>
+                  </th>
+                  <th className="p-3 border-b">
+                    <div className="flex items-center justify-end group cursor-pointer" onClick={() => dispatch(sorting({column:"market_cap"}))}>
+                      {sortOrder.market_cap === "asc" ?
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      : 
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      }
+                      <span>Market Cap</span>
+                    </div>
+                  </th>
+                  <th className="p-3 border-b">
+                    <div className="flex items-center justify-end group cursor-pointer" onClick={() => dispatch(sorting({column:"volume24h"}))}>
+                      {sortOrder.volume24h === "asc" ?
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" /> 
+                      :
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      }
+                      <span>Volume</span>
+                      </div>
+                  </th>
+                  <th className="p-3 border-b">
+                    <div className="flex items-center justify-end group cursor-pointer" onClick={() => dispatch(sorting({column:"circulating_supply"}))}>
+                      {sortOrder.circulating_supply === "asc" ?
+                        <IoCaretDownOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      :
+                        <IoCaretUpOutline className="text-gray-500 mr-2 invisible group-hover:visible" />
+                      }
+                      <span>Circulating Supply</span>
+                    </div>
+                  </th>
                   <th className="p-3 border-b">Trend (7d)</th>
                 </tr>
               </thead>
@@ -129,20 +211,8 @@ const CryptoTable = ({ data }) => {
                     <td className="p-3 border-b text-right">
                       ${formatNumber(coin.circulating_supply)}
                     </td>
-                    <td className="p-3 border-b w-[300px] h-[40px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
-                          data={coin.sparkline_in_7d.price.map((p, i) => ({ p, i }))}
-                        >
-                          <Line
-                            type="monotone"
-                            dataKey="p"
-                            stroke="#3b82f6"
-                            dot={false}
-                            strokeWidth={2}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
+                    <td className="p-2 border-b w-[200px] h-[35px]">
+                      <img src={`https://www.coingecko.com/coins/${coin.id}/sparkline.svg`} alt={`${coin.name+" last 7d trend"}`} />
                     </td>
                   </tr>
                 ))}
