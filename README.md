@@ -1,6 +1,6 @@
-# 📘 Assignment: Real-Time Crypto Price Tracker
+# Real-Time Crypto Price Tracker
 
-## 🎯 Objective
+## 🎯 Introduction
 
 Build a responsive **React + Redux Toolkit** application that tracks real-time crypto prices (similar to CoinMarketCap), simulates WebSocket updates, and manages all asset state exclusively via Redux.
 
